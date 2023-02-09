@@ -14,49 +14,25 @@ public class JpaMain {
         tx.begin();
 
         try {
-//
-//            for (int i = 0; i < 100; i++) {
-//                Member member = new Member();
-//                member.setUsername("member" + i);
-//                member.setAge(i);
-//                em.persist(member);
-//            }
-
-            Team team = new Team();
-            team.setUsername("teamA");
-            em.persist(team);
-
-            Member member = new Member();
-            member.setUsername("teamA");
-            member.setAge(10);
-
-            member.setTeam(team);
-
-            em.persist(member);
+            for (int i = 0; i < 100; i++) {
+                Member member = new Member();
+                member.setUsername("member" + i);
+                member.setAge(i);
+                em.persist(member);
+            }
 
             em.flush();
             em.clear();
 
-            String query = "select m from Member m left join Team t on m.username = t.username ";
-            List<Member> resultList = em.createQuery(query, Member.class)
+            String query = "select m from Member m order by m.username desc";
+            List<Member> result = em.createQuery(query, Member.class)
+                    .setFirstResult(0)
+                    .setMaxResults(10)
                     .getResultList();
 
-//            List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
-//                    .setFirstResult(1)
-//                    .setMaxResults(10)
-//                    .getResultList();
-//
-//            System.out.println("result = " + result.size());
-//            for (Member member1 : result) {
-//                System.out.println("member1 = " + member1);
-//            }
-
-//            List<MemberDTO> resultList = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m ", MemberDTO.class)
-//                    .getResultList();
-//
-//            MemberDTO memberDTO = resultList.get(0);
-//            System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
-//            System.out.println("memberDTO = " + memberDTO.getAge());
+            for (Member member : result) {
+                System.out.println("member = " + member);
+            }
 
             tx.commit();
         } catch (Exception e) {
